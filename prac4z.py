@@ -30,6 +30,10 @@ GPIO.add_event_detect(switch_2,GPIO.FALLING,callback=callback2)
 GPIO.add_event_detect(switch_3,GPIO.FALLING,callback=callback3)
 GPIO.add_event_detect(switch_4,GPIO.FALLING,callback=callback4)
 
+def callback1(channel):
+    global timer
+    timer = 0
+    print ("\n" * 100)
 
 #function to convert voltage to temperature
 def Temperature (voltage):
