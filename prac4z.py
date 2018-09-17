@@ -29,3 +29,17 @@ GPIO.add_event_detect(switch_1,GPIO.FALLING,callback=callback1)
 GPIO.add_event_detect(switch_2,GPIO.FALLING,callback=callback2)
 GPIO.add_event_detect(switch_3,GPIO.FALLING,callback=callback3)
 GPIO.add_event_detect(switch_4,GPIO.FALLING,callback=callback4)
+
+
+#function to convert voltage to temperature
+def Temperature (voltage):
+    temp = voltage
+    temp = int ((temp - 0.5)/0.01 )
+    
+    return temp
+
+#function to convert voltage to %
+def Percent (voltage):
+    per = (int (voltage/3.1*100))
+
+    return per
