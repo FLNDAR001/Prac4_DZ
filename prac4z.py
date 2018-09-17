@@ -43,3 +43,33 @@ def Percent (voltage):
     per = (int (voltage/3.1*100))
 
     return per
+
+try:
+    while 1:
+        if(y == True):
+
+            
+            sensor_data1 = GetData (channel1)
+            pot = ConvertVolts(sensor_data1,2)
+            sensor_data2 = GetData (channel2)
+            sensor_volt2 = ConvertVolts(sensor_data2,2)
+            sensor_data3 = GetData (channel3)
+            sensor_volt3 = ConvertVolts(sensor_data3,2)
+            temp = Temperature (sensor_volt3)
+            light = Percent(sensor_volt2)
+            element = (str(time.strftime("%H:%M:%S   ")) + '00:00:' + str(timer)+ "     " + str(pot)+ 'V    ' + str(temp) + 'C     ' + str(light) +'%')
+            arr.append(element) 
+            print('_______________________________________________')
+            print (time.strftime("%H:%M:%S  "),'00:00:' + str(timer),'   ',str(pot)+ 'V   ' , str(temp) + 'C   ', str(light) +'%')
+        
+        
+
+        # Wait before repeating loop
+        time.sleep(delay)
+        timer = timer + delay
+      
+     
+        
+       
+except KeyboardInterrupt:
+    spi.close()
