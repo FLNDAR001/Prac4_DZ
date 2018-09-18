@@ -14,7 +14,6 @@ switch_1 = 23
 switch_2 = 22
 switch_3 = 27
 switch_4 = 17
-switch_5 = 23
 
 # function to read ADC data from a channel
 def GetData(channel): # channel must be an integer 0-7
@@ -39,10 +38,10 @@ GPIO.setup(switch_4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 
 #Interrupts
-GPIO.add_event_detect(switch_1,GPIO.FALLING,callback=callback1)
-GPIO.add_event_detect(switch_2,GPIO.FALLING,callback=callback2)
-GPIO.add_event_detect(switch_3,GPIO.FALLING,callback=callback3)
-GPIO.add_event_detect(switch_4,GPIO.FALLING,callback=callback4)
+GPIO.add_event_detect(switch_1,GPIO.FALLING,callback=callback1, bouncetime=200)
+GPIO.add_event_detect(switch_2,GPIO.FALLING,callback=callback2, bouncetime=200)
+GPIO.add_event_detect(switch_3,GPIO.FALLING,callback=callback3, bouncetime=200)
+GPIO.add_event_detect(switch_4,GPIO.FALLING,callback=callback4, bouncetime=200)
 
 def callback1(channel):
     global timer
@@ -59,8 +58,23 @@ def Temperature (voltage):
 #function to convert voltage to %
 def Percent (voltage):
     per = (int (voltage/3.1*100))
-
+    
     return per
+
+# Define sensor channels
+channel1 = 0
+channel2 = 1
+channel3 = 2
+# Define delay between readings
+delay = .5
+
+print('_______________________________________________')
+print('Time        Timer          Pot    Temp   Light')
+
+timer = 0.5
+arr = []
+
+y = True 
 
 try:
     while 1:
