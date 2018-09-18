@@ -5,6 +5,7 @@ import RPi.GPIO as GPIO
 import spidev
 import time
 
+#Open SPI bus
 spi = spidev.SpiDev() # create spi object
 spi.open(0,0)
 spi.max_speed_hz = 1000000
@@ -15,10 +16,74 @@ switch_2 = 22
 switch_3 = 27
 switch_4 = 17
 
+#GPIO setup
+GPIO.setup(switch_1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(switch_2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(switch_3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+GPIO.setup(switch_4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+count = 0
+
+def callback1(channel):
+    global timer
+    timer = 0
+    print ("\n" * 100)
+
+def callback2(channel2):
+
+    global y
+
+
+
+
+    global count
+
+    count = count + 1
+
+    if (count%2 == 0):
+        y = True
+    else:
+        y = False
+
+
+
+def callback3(channel3):
+    global delay
+
+    if (delay >= 2):
+        delay = 0.5
+    else:
+        delay = delay * 2 
+
+
+
+
+def callback4(channel4):
+    global arr
+    print('_______________________________________________')
+    print('Time        Timer          Pot    Temp   Light')
+
+    if len(arr) >=5:
+
+        for i in range(0,5):
+            print(arr[i])
+            print('_____________________________________________')
+    else:
+        for i in arr:
+            print(i) 
+    arr.clear()    
+
+
+#Interrupts
+GPIO.add_event_detect(switch_1,GPIO.FALLING,callback=callback1, bouncetime=200)
+GPIO.add_event_detect(switch_2,GPIO.FALLING,callback=callback2, bouncetime=200)
+GPIO.add_event_detect(switch_3,GPIO.FALLING,callback=callback3, bouncetime=200)
+GPIO.add_event_detect(switch_4,GPIO.FALLING,callback=callback4, bouncetime=200)
+
 # function to read ADC data from a channel
 def GetData(channel): # channel must be an integer 0-7
     adc = spi.xfer2([1,(8+channel)<<4,0]) # sending 3 bytes
-    data = ((adc[2]&3) << 8) + adc[1]
+    data = ((adc[1]&3) << 8) + adc[2]
     return data
 
 
@@ -28,25 +93,6 @@ def ConvertVolts(data,places):
     volts = (data * 3.3) / float(1023)
     volts = round(volts,places)
     return volts
-
-
-#GPIO setup
-GPIO.setup(switch_1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(switch_2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(switch_3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-GPIO.setup(switch_4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
-
-#Interrupts
-GPIO.add_event_detect(switch_1,GPIO.FALLING,callback=callback1, bouncetime=200)
-GPIO.add_event_detect(switch_2,GPIO.FALLING,callback=callback2, bouncetime=200)
-GPIO.add_event_detect(switch_3,GPIO.FALLING,callback=callback3, bouncetime=200)
-GPIO.add_event_detect(switch_4,GPIO.FALLING,callback=callback4, bouncetime=200)
-
-def callback1(channel):
-    global timer
-    timer = 0
-    print ("\n" * 100)
 
 #function to convert voltage to temperature
 def Temperature (voltage):
